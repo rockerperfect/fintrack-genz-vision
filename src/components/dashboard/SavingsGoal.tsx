@@ -10,6 +10,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -182,20 +183,51 @@ export function SavingsGoal({ current = 0, goal = 5000, percentage = 0 }: Saving
   const quickAmounts = [10, 25, 50, 100];
 
   return (
-    <div className="space-y-6">
+    <motion.div 
+      className="space-y-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <motion.div 
+        className="flex items-center justify-between"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+      >
         <div>
-          <h2 className="text-2xl font-semibold text-foreground">Savings Goals</h2>
-          <p className="text-muted-foreground">Track your progress towards financial goals</p>
+          <motion.h2 
+            className="text-2xl font-semibold text-foreground"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Savings Goals
+          </motion.h2>
+          <motion.p 
+            className="text-muted-foreground"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            Track your progress towards financial goals
+          </motion.p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              New Goal
-            </Button>
-          </DialogTrigger>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                New Goal
+              </Button>
+            </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Create New Savings Goal</DialogTitle>
@@ -261,11 +293,17 @@ export function SavingsGoal({ current = 0, goal = 5000, percentage = 0 }: Saving
             </div>
           </DialogContent>
         </Dialog>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Goals List */}
       {savingsGoals.length > 0 ? (
-        <div className="space-y-4">
+        <motion.div 
+          className="space-y-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
           {savingsGoals
             .sort((a, b) => {
               // Sort by priority then by deadline
@@ -275,14 +313,21 @@ export function SavingsGoal({ current = 0, goal = 5000, percentage = 0 }: Saving
               }
               return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
             })
-            .map((goalData) => {
+            .map((goalData, index) => {
               const progress = (goalData.currentAmount / goalData.targetAmount) * 100;
               const status = getGoalStatus(goalData);
               const StatusIcon = status.icon;
               
               return (
-                <Card key={goalData.id} className="border shadow-sm bg-card">
-                  <CardContent className="p-6">
+                <motion.div
+                  key={goalData.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
+                  whileHover={{ y: -2, transition: { duration: 0.15 } }}
+                >
+                  <Card className="border shadow-sm bg-card">
+                    <CardContent className="p-6">
                     <div className="space-y-4">
                       {/* Goal Header */}
                       <div className="flex items-start justify-between">
@@ -362,9 +407,10 @@ export function SavingsGoal({ current = 0, goal = 5000, percentage = 0 }: Saving
                     </div>
                   </CardContent>
                 </Card>
+                </motion.div>
               );
             })}
-        </div>
+        </motion.div>
       ) : (
         /* Empty State */
         <Card className="border shadow-sm bg-card">
@@ -412,6 +458,6 @@ export function SavingsGoal({ current = 0, goal = 5000, percentage = 0 }: Saving
           </CardContent>
         </Card>
       )}
-    </div>
+    </motion.div>
   );
 }

@@ -20,6 +20,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -201,73 +202,142 @@ export function AddTransaction() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 pb-24">
+    <motion.div 
+      className="min-h-screen bg-background p-4 pb-24"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="max-w-md mx-auto space-y-6">
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold text-foreground">Add Transaction</h1>
-          <p className="text-muted-foreground mt-2">Track your income and expenses</p>
-        </div>
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          <motion.h1 
+            className="text-2xl font-semibold text-foreground"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Add Transaction
+          </motion.h1>
+          <motion.p 
+            className="text-muted-foreground mt-2"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            Track your income and expenses
+          </motion.p>
+        </motion.div>
 
         {/* Success Message */}
-        {isSubmitted && (
-          <Card className="border-success/20 bg-success/5">
+        <AnimatePresence>
+          {isSubmitted && (
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Card className="border-success/20 bg-success/5">
+                <CardContent className="p-4">
+                  <motion.div 
+                    className="flex items-center gap-3 text-success"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                  >
+                    <motion.div
+                      animate={{ 
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 360]
+                      }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                    >
+                      <CheckCircle className="w-5 h-5" />
+                    </motion.div>
+                    <span className="font-medium">Transaction added successfully!</span>
+                  </motion.div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Transaction Type Toggle */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          whileHover={{ y: -1, transition: { duration: 0.15 } }}
+        >
+          <Card className="border shadow-sm bg-card">
             <CardContent className="p-4">
-              <div className="flex items-center gap-3 text-success">
-                <CheckCircle className="w-5 h-5" />
-                <span className="font-medium">Transaction added successfully!</span>
+              <Label className="text-sm font-medium text-muted-foreground">Transaction Type</Label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button
+                    type="button"
+                    variant={form.type === 'expense' ? 'default' : 'outline'}
+                    onClick={() => {
+                      handleChange('type', 'expense');
+                      handleChange('category', ''); // Reset category when type changes
+                    }}
+                    className="h-12 flex items-center gap-2 w-full"
+                  >
+                    <Minus className="w-4 h-4" />
+                    Expense
+                  </Button>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button
+                    type="button"
+                    variant={form.type === 'income' ? 'default' : 'outline'}
+                    onClick={() => {
+                      handleChange('type', 'income');
+                      handleChange('category', ''); // Reset category when type changes
+                    }}
+                    className={`h-12 flex items-center gap-2 w-full ${
+                      form.type === 'income' 
+                        ? 'bg-success hover:bg-success/90 text-success-foreground' 
+                        : ''
+                    }`}
+                  >
+                    <Plus className="w-4 h-4" />
+                    Income
+                  </Button>
+                </motion.div>
               </div>
             </CardContent>
           </Card>
-        )}
-
-        {/* Transaction Type Toggle */}
-        <Card className="border shadow-sm bg-card">
-          <CardContent className="p-4">
-            <Label className="text-sm font-medium text-muted-foreground">Transaction Type</Label>
-            <div className="grid grid-cols-2 gap-2 mt-2">
-              <Button
-                type="button"
-                variant={form.type === 'expense' ? 'default' : 'outline'}
-                onClick={() => {
-                  handleChange('type', 'expense');
-                  handleChange('category', ''); // Reset category when type changes
-                }}
-                className="h-12 flex items-center gap-2"
-              >
-                <Minus className="w-4 h-4" />
-                Expense
-              </Button>
-              <Button
-                type="button"
-                variant={form.type === 'income' ? 'default' : 'outline'}
-                onClick={() => {
-                  handleChange('type', 'income');
-                  handleChange('category', ''); // Reset category when type changes
-                }}
-                className={`h-12 flex items-center gap-2 ${
-                  form.type === 'income' 
-                    ? 'bg-success hover:bg-success/90 text-success-foreground' 
-                    : ''
-                }`}
-              >
-                <Plus className="w-4 h-4" />
-                Income
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        </motion.div>
 
         {/* Main Form */}
-        <Card className="border shadow-sm bg-card">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-primary" />
-              {form.type === 'expense' ? 'New Expense' : 'New Income'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          whileHover={{ y: -1, transition: { duration: 0.15 } }}
+        >
+          <Card className="border shadow-sm bg-card">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-primary" />
+                {form.type === 'expense' ? 'New Expense' : 'New Income'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
               {/* Amount Input */}
               <div className="space-y-2">
                 <Label htmlFor="amount">Amount</Label>
@@ -315,29 +385,37 @@ export function AddTransaction() {
               <div className="space-y-2">
                 <Label>Category</Label>
                 <div className="grid grid-cols-2 gap-2">
-                  {categories.map((category) => {
+                  {categories.map((category, index) => {
                     const Icon = category.icon;
                     const isSelected = form.category === category.name;
                     return (
-                      <Button
+                      <motion.div
                         key={category.name}
-                        type="button"
-                        variant="outline"
-                        onClick={() => handleChange('category', category.name)}
-                        className={`h-16 flex flex-col items-center gap-1 p-3 ${
-                          isSelected 
-                            ? 'border-primary bg-primary/10 text-primary' 
-                            : 'hover:bg-muted/50'
-                        }`}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3, delay: 0.6 + index * 0.05 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                       >
-                        <Icon className="w-4 h-4" />
-                        <span className="text-xs text-center leading-tight">
-                          {category.name.length > 12 
-                            ? category.name.split(' ')[0] 
-                            : category.name
-                          }
-                        </span>
-                      </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => handleChange('category', category.name)}
+                          className={`h-16 flex flex-col items-center gap-1 p-3 w-full ${
+                            isSelected 
+                              ? 'border-primary bg-primary/10 text-primary' 
+                              : 'hover:bg-muted/50'
+                          }`}
+                        >
+                          <Icon className="w-4 h-4" />
+                          <span className="text-xs text-center leading-tight">
+                            {category.name.length > 12 
+                              ? category.name.split(' ')[0] 
+                              : category.name
+                            }
+                          </span>
+                        </Button>
+                      </motion.div>
                     );
                   })}
                 </div>
@@ -350,54 +428,75 @@ export function AddTransaction() {
               </div>
 
               {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full h-12 text-base font-medium ${
-                  form.type === 'income'
-                    ? 'bg-success hover:bg-success/90 text-success-foreground'
-                    : 'bg-primary hover:bg-primary/90 text-primary-foreground'
-                }`}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    Adding...
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Plus className="w-4 h-4" />
-                    Add {form.type === 'expense' ? 'Expense' : 'Income'}
-                  </div>
-                )}
-              </Button>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className={`w-full h-12 text-base font-medium ${
+                    form.type === 'income'
+                      ? 'bg-success hover:bg-success/90 text-success-foreground'
+                      : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+                  }`}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      Adding...
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Plus className="w-4 h-4" />
+                      Add {form.type === 'expense' ? 'Expense' : 'Income'}
+                    </div>
+                  )}
+                </Button>
+              </motion.div>
             </form>
           </CardContent>
         </Card>
+        </motion.div>
 
         {/* Quick Amount Suggestions */}
         {form.type === 'expense' && (
-          <Card className="border shadow-sm bg-card">
-            <CardContent className="p-4">
-              <Label className="text-sm font-medium text-muted-foreground mb-3 block">Quick Amounts</Label>
-              <div className="grid grid-cols-4 gap-2">
-                {['5', '10', '25', '50'].map((amount) => (
-                  <Button
-                    key={amount}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleChange('amount', amount)}
-                    className="h-9 text-sm"
-                  >
-                    ${amount}
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            whileHover={{ y: -1, transition: { duration: 0.15 } }}
+          >
+            <Card className="border shadow-sm bg-card">
+              <CardContent className="p-4">
+                <Label className="text-sm font-medium text-muted-foreground mb-3 block">Quick Amounts</Label>
+                <div className="grid grid-cols-4 gap-2">
+                  {['5', '10', '25', '50'].map((amount, index) => (
+                    <motion.div
+                      key={amount}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: 0.7 + index * 0.05 }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleChange('amount', amount)}
+                        className="h-9 text-sm w-full"
+                      >
+                        ${amount}
+                      </Button>
+                    </motion.div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

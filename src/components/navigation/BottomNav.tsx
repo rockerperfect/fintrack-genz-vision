@@ -27,6 +27,7 @@
  */
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Home, Target, TrendingUp, User, PlusCircle } from 'lucide-react';
 
 interface NavItem {
@@ -57,15 +58,20 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border">
+    <motion.div 
+      className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border"
+      initial={{ y: 100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       <div className="flex items-center justify-around px-4 py-3 safe-area-bottom max-w-md mx-auto">
-        {navItems.map((item) => {
+        {navItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
           const isAddButton = item.id === 'add';
           
           return (
-            <button
+            <motion.button
               key={item.id}
               onClick={() => onTabChange(item.id)}
               className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all duration-200 min-h-[44px] min-w-[44px] ${
@@ -76,27 +82,52 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
               }`}
               aria-label={item.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {/* Active indicator */}
               {isActive && !isAddButton && (
-                <div className="absolute -top-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+                <motion.div 
+                  className="absolute -top-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
               )}
               
-              <Icon className={`${
-                isAddButton ? 'w-5 h-5' : 'w-5 h-5'
-              } transition-transform duration-150`} />
+              <motion.div
+                animate={{ 
+                  scale: isActive ? 1.1 : 1,
+                  rotate: isActive ? 360 : 0
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                <Icon className={`${
+                  isAddButton ? 'w-5 h-5' : 'w-5 h-5'
+                } transition-transform duration-150`} />
+              </motion.div>
               
               {!isAddButton && (
-                <span className={`text-xs font-medium leading-tight ${
-                  isActive ? 'text-primary' : 'text-muted-foreground'
-                }`}>
+                <motion.span 
+                  className={`text-xs font-medium leading-tight ${
+                    isActive ? 'text-primary' : 'text-muted-foreground'
+                  }`}
+                  animate={{ 
+                    opacity: isActive ? 1 : 0.7,
+                    y: isActive ? 0 : 2
+                  }}
+                  transition={{ duration: 0.2 }}
+                >
                   {item.label}
-                </span>
+                </motion.span>
               )}
-            </button>
+            </motion.button>
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }

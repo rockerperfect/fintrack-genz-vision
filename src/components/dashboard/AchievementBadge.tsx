@@ -28,6 +28,7 @@
  */
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { 
@@ -119,19 +120,34 @@ export function AchievementBadge({ achievement }: AchievementBadgeProps) {
   const styling = getAchievementStyling();
 
   return (
-    <div className={`relative p-4 rounded-lg border transition-all duration-200 ${
-      styling.containerClass
-    } ${unlocked ? 'hover:shadow-md' : ''}`}>
+    <motion.div 
+      className={`relative p-4 rounded-lg border transition-all duration-200 ${
+        styling.containerClass
+      } ${unlocked ? 'hover:shadow-md' : ''}`}
+      whileHover={{ scale: 1.01, y: -1, transition: { duration: 0.15 } }}
+      whileTap={{ scale: 0.98 }}
+    >
       
       <div className="relative flex items-center gap-3">
         {/* Achievement Icon */}
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-          unlocked 
-            ? 'bg-white/60 backdrop-blur-sm shadow-sm' 
-            : 'bg-muted/50'
-        }`}>
+        <motion.div 
+          className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+            unlocked 
+              ? 'bg-white/60 backdrop-blur-sm shadow-sm' 
+              : 'bg-muted/50'
+          }`}
+          animate={unlocked ? {
+            scale: [1, 1.1, 1],
+            rotate: [0, 5, -5, 0]
+          } : {}}
+          transition={unlocked ? {
+            duration: 2,
+            repeat: Infinity,
+            repeatDelay: 5
+          } : {}}
+        >
           <IconComponent className={`w-5 h-5 ${styling.iconClass}`} />
-        </div>
+        </motion.div>
 
         {/* Achievement Info */}
         <div className="flex-1 min-w-0">
@@ -142,9 +158,15 @@ export function AchievementBadge({ achievement }: AchievementBadgeProps) {
               {title}
             </h4>
             {unlocked && (
-              <Badge variant="secondary" className={`text-xs px-2 py-0 ${styling.badgeClass}`}>
-                ✓ Unlocked
-              </Badge>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
+              >
+                <Badge variant="secondary" className={`text-xs px-2 py-0 ${styling.badgeClass}`}>
+                  ✓ Unlocked
+                </Badge>
+              </motion.div>
             )}
           </div>
           
@@ -156,31 +178,59 @@ export function AchievementBadge({ achievement }: AchievementBadgeProps) {
 
           {/* Progress Bar for Incomplete Achievements */}
           {!unlocked && (
-            <div className="mt-3 space-y-2">
+            <motion.div 
+              className="mt-3 space-y-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
               <div className="flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">Progress</span>
                 <span className="font-medium text-foreground">
                   {progress}/{maxProgress}
                 </span>
               </div>
-              <Progress 
-                value={progressPercentage} 
-                className="h-1.5 bg-muted/50"
-              />
-            </div>
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <Progress 
+                  value={progressPercentage} 
+                  className="h-1.5 bg-muted/50"
+                />
+              </motion.div>
+            </motion.div>
           )}
 
           {/* Achievement Completed Indicator */}
           {unlocked && progress > maxProgress && (
-            <div className="mt-2 flex items-center gap-1">
-              <Star className="w-3 h-3 text-amber-500" />
+            <motion.div 
+              className="mt-2 flex items-center gap-1"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                animate={{ 
+                  rotate: [0, 360],
+                  scale: [1, 1.2, 1]
+                }}
+                transition={{ 
+                  duration: 1,
+                  repeat: Infinity,
+                  repeatDelay: 2
+                }}
+              >
+                <Star className="w-3 h-3 text-amber-500" />
+              </motion.div>
               <span className="text-xs text-amber-600 font-medium">
                 Exceeded goal! ({progress}/{maxProgress})
               </span>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
