@@ -1,7 +1,35 @@
+/**
+ * card.tsx
+ *
+ * UI Card component primitives for Fintrack GenZ Vision.
+ * - Provides Card, CardHeader, CardTitle, CardDescription, CardContent, and CardFooter components.
+ * - Used for consistent, accessible, and responsive card layouts throughout the app.
+ *
+ * Dependencies:
+ * - React: forwardRef for ref forwarding and composition
+ * - cn (className utility): for merging Tailwind and custom classes
+ *
+ * Design Decisions:
+ * - All components forward refs for maximum composability.
+ * - Class names use Tailwind CSS for styling and theming.
+ * - Card primitives are stateless and purely presentational.
+ *
+ * Edge Cases & Limitations:
+ * - Accepts any valid HTML attributes for flexibility.
+ * - Custom className can override default styles; use with caution.
+ *
+ * TODO: Add ARIA roles and accessibility testing.
+ */
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
 
+/**
+ * Card
+ * Root card container component.
+ * @param {React.HTMLAttributes<HTMLDivElement>} props - Card props and className
+ * @param {React.Ref<HTMLDivElement>} ref - Forwarded ref
+ * @returns {JSX.Element} Card container
+ */
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -17,6 +45,13 @@ const Card = React.forwardRef<
 ))
 Card.displayName = "Card"
 
+/**
+ * CardHeader
+ * Card header section for titles and actions.
+ * @param {React.HTMLAttributes<HTMLDivElement>} props - Header props and className
+ * @param {React.Ref<HTMLDivElement>} ref - Forwarded ref
+ * @returns {JSX.Element} Card header
+ */
 const CardHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -29,6 +64,13 @@ const CardHeader = React.forwardRef<
 ))
 CardHeader.displayName = "CardHeader"
 
+/**
+ * CardTitle
+ * Card title text, styled for prominence.
+ * @param {React.HTMLAttributes<HTMLHeadingElement>} props - Title props and className
+ * @param {React.Ref<HTMLParagraphElement>} ref - Forwarded ref
+ * @returns {JSX.Element} Card title
+ */
 const CardTitle = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLHeadingElement>
@@ -44,6 +86,13 @@ const CardTitle = React.forwardRef<
 ))
 CardTitle.displayName = "CardTitle"
 
+/**
+ * CardDescription
+ * Card description text, styled for secondary info.
+ * @param {React.HTMLAttributes<HTMLParagraphElement>} props - Description props and className
+ * @param {React.Ref<HTMLParagraphElement>} ref - Forwarded ref
+ * @returns {JSX.Element} Card description
+ */
 const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
@@ -56,6 +105,13 @@ const CardDescription = React.forwardRef<
 ))
 CardDescription.displayName = "CardDescription"
 
+/**
+ * CardContent
+ * Main card content area.
+ * @param {React.HTMLAttributes<HTMLDivElement>} props - Content props and className
+ * @param {React.Ref<HTMLDivElement>} ref - Forwarded ref
+ * @returns {JSX.Element} Card content
+ */
 const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -64,6 +120,13 @@ const CardContent = React.forwardRef<
 ))
 CardContent.displayName = "CardContent"
 
+/**
+ * CardFooter
+ * Card footer section for actions and summary info.
+ * @param {React.HTMLAttributes<HTMLDivElement>} props - Footer props and className
+ * @param {React.Ref<HTMLDivElement>} ref - Forwarded ref
+ * @returns {JSX.Element} Card footer
+ */
 const CardFooter = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>

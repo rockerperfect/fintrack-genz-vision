@@ -1,4 +1,22 @@
 /**
+ * SavingsGoal.tsx
+ *
+ * Gamified savings goal component for Fintrack GenZ Vision dashboard.
+ * - Displays current savings, goal, progress percentage, and motivational messaging.
+ * - Shows milestone markers and celebration animations for goal achievement.
+ *
+ * Dependencies:
+ * - Lucide React icons for visual representation
+ * - UI primitives: Card, Progress, Button, Badge
+ *
+ * Edge Cases & Limitations:
+ * - Progress capped at 100%; negative values not allowed.
+ * - Milestone logic assumes fixed percentages.
+ *
+ * TODO: Add goal adjustment, backend integration, and accessibility improvements.
+ */
+
+/**
  * Savings Goal Component - Gamified savings progress tracking
  * 
  * Features:
@@ -21,6 +39,12 @@ interface SavingsGoalProps {
   percentage: number;
 }
 
+ /**
+ * SavingsGoal
+ * Renders savings goal progress and motivational messaging.
+ * @param {SavingsGoalProps} props - Current, goal, and percentage
+ * @returns {JSX.Element} Savings goal UI
+ */
 export function SavingsGoal({ current, goal, percentage }: SavingsGoalProps) {
   const remaining = goal - current;
   const isGoalReached = percentage >= 100;
@@ -68,22 +92,24 @@ export function SavingsGoal({ current, goal, percentage }: SavingsGoalProps) {
   const motivation = getMotivationalMessage();
 
   return (
-    <Card className="card-glow border-0">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Target className="w-5 h-5 text-primary" />
+    <Card className="border shadow-sm bg-card">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-3 text-lg font-semibold">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Target className="w-5 h-5 text-primary" />
+          </div>
           Savings Goal
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-5">
         {/* Progress Overview */}
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-2xl font-outfit font-bold text-foreground">
-              ${current.toLocaleString()}
+            <h3 className="text-2xl font-semibold text-foreground">
+              ${current.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </h3>
             <p className="text-sm text-muted-foreground">
-              of ${goal.toLocaleString()} goal
+              of ${goal.toLocaleString('en-US', { minimumFractionDigits: 2 })} goal
             </p>
           </div>
           <div className="text-right">
@@ -93,36 +119,36 @@ export function SavingsGoal({ current, goal, percentage }: SavingsGoalProps) {
               {percentage.toFixed(1)}%
             </div>
             <p className="text-sm text-muted-foreground">
-              {isGoalReached ? 'Complete!' : `$${remaining.toLocaleString()} to go`}
+              {isGoalReached ? 'Complete!' : `$${remaining.toLocaleString('en-US', { minimumFractionDigits: 2 })} to go`}
             </p>
           </div>
         </div>
 
-        {/* Enhanced Progress Bar with Milestones */}
-        <div className="space-y-2">
+        {/* Professional Progress Bar */}
+        <div className="space-y-3">
           <div className="relative">
             <Progress 
               value={Math.min(percentage, 100)} 
-              className={`progress-glow h-4 ${
-                isGoalReached ? 'bg-success/20' : 'bg-primary/20'
+              className={`h-2 ${
+                isGoalReached ? 'bg-success/10' : 'bg-primary/10'
               }`}
             />
             
             {/* Milestone Markers */}
-            <div className="absolute top-0 left-0 w-full h-4 flex items-center">
+            <div className="absolute top-0 left-0 w-full h-2 flex items-center">
               {milestones.map((milestone) => (
                 <div
                   key={milestone}
                   className="absolute flex flex-col items-center"
                   style={{ left: `${milestone}%`, transform: 'translateX(-50%)' }}
                 >
-                  <div className={`w-2 h-2 rounded-full border-2 border-background ${
+                  <div className={`w-1.5 h-1.5 rounded-full ${
                     percentage >= milestone 
-                      ? 'bg-success shadow-success' 
-                      : 'bg-muted border-muted-foreground'
+                      ? 'bg-success' 
+                      : 'bg-muted-foreground/30'
                   }`} />
-                  {milestone < 100 && (
-                    <span className="text-xs text-muted-foreground mt-1">
+                  {milestone < 100 && milestone % 25 === 0 && (
+                    <span className="text-xs text-muted-foreground mt-2">
                       {milestone}%
                     </span>
                   )}
@@ -132,26 +158,27 @@ export function SavingsGoal({ current, goal, percentage }: SavingsGoalProps) {
           </div>
         </div>
 
-        {/* Milestone Badges */}
+        {/* Milestone Achievements */}
         {completedMilestones.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {completedMilestones.map((milestone) => (
               <Badge 
                 key={milestone}
-                className="achievement-badge text-xs px-2 py-1"
+                variant="secondary"
+                className="text-xs px-2 py-1 bg-success/10 text-success border-success/20"
               >
                 <Star className="w-3 h-3 mr-1" />
-                {milestone}% Club
+                {milestone}% Milestone
               </Badge>
             ))}
           </div>
         )}
 
         {/* Motivational Section */}
-        <div className={`p-3 rounded-xl border-2 ${
+        <div className={`p-4 rounded-lg border ${
           isGoalReached 
-            ? 'bg-success/10 border-success/20 text-success' 
-            : 'bg-primary/10 border-primary/20 text-primary'
+            ? 'bg-success/5 border-success/20 text-success' 
+            : 'bg-primary/5 border-primary/20 text-primary'
         }`}>
           <div className="flex items-center gap-2 mb-1">
             {isGoalReached ? (
@@ -159,15 +186,18 @@ export function SavingsGoal({ current, goal, percentage }: SavingsGoalProps) {
             ) : (
               <Zap className="w-4 h-4" />
             )}
-            <p className="font-semibold text-sm">{motivation.title}</p>
+            <p className="font-medium text-sm">{motivation.title}</p>
           </div>
-          <p className="text-xs opacity-80">{motivation.message}</p>
+          <p className="text-xs text-muted-foreground">{motivation.message}</p>
         </div>
 
         {/* Action Button */}
         <Button 
-          variant={isGoalReached ? "success" : "game"} 
-          className="w-full"
+          className={`w-full h-11 ${
+            isGoalReached 
+              ? 'bg-success hover:bg-success/90 text-success-foreground' 
+              : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+          }`}
         >
           <PiggyBank className="w-4 h-4 mr-2" />
           {motivation.action}
@@ -181,7 +211,7 @@ export function SavingsGoal({ current, goal, percentage }: SavingsGoalProps) {
                 key={amount}
                 variant="outline"
                 size="sm"
-                className="text-xs border-primary/20 hover:bg-primary/10"
+                className="text-xs h-9 border-border hover:bg-muted/50"
               >
                 +${amount}
               </Button>

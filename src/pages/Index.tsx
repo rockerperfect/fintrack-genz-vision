@@ -1,4 +1,22 @@
 /**
+ * Index.tsx
+ *
+ * Main finance app page for Fintrack GenZ Vision.
+ * - Mobile-first, gamified UI for Gen Z users.
+ * - Integrates Dashboard, GoalsPage, and BottomNav components.
+ * - Handles tab switching and renders active tab content.
+ *
+ * Dependencies:
+ * - UI primitives: Dashboard, GoalsPage, BottomNav
+ *
+ * Edge Cases & Limitations:
+ * - All tab content is currently static; replace with API integration.
+ * - Add transaction, insights, and profile features are placeholders.
+ *
+ * TODO: Add backend integration, error handling, and accessibility improvements.
+ */
+
+/**
  * Main Finance App - Gen Z Personal Finance & Investment App
  * 
  * Features:
@@ -13,10 +31,23 @@ import React, { useState } from 'react';
 import { Dashboard } from '@/components/dashboard/Dashboard';
 import { GoalsPage } from '@/components/goals/GoalsPage';
 import { BottomNav } from '@/components/navigation/BottomNav';
+import { Analytics } from '@/components/dashboard/Analytics';
+import { UserProfile } from '@/components/profile/UserProfile';
+import { AddTransaction } from '@/components/dashboard/AddTransaction';
 
+/**
+ * Index
+ * Renders the main app UI with tab navigation and content switching.
+ * @returns {JSX.Element} Main app UI
+ */
 const Index = () => {
   const [activeTab, setActiveTab] = useState('home');
 
+  /**
+   * renderActiveTab
+   * Determines and renders the content for the active tab.
+   * @returns {JSX.Element} Content of the active tab
+   */
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'home':
@@ -24,26 +55,11 @@ const Index = () => {
       case 'goals':
         return <GoalsPage />;
       case 'add':
-        return <div className="min-h-screen bg-background p-4 pb-24 flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-2xl font-outfit font-bold mb-4">Add Transaction</h2>
-            <p className="text-muted-foreground">Quick add feature coming soon!</p>
-          </div>
-        </div>;
+        return <AddTransaction />;
       case 'insights':
-        return <div className="min-h-screen bg-background p-4 pb-24 flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-2xl font-outfit font-bold mb-4">Insights</h2>
-            <p className="text-muted-foreground">Analytics and insights coming soon!</p>
-          </div>
-        </div>;
+        return <Analytics />;
       case 'profile':
-        return <div className="min-h-screen bg-background p-4 pb-24 flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-2xl font-outfit font-bold mb-4">Profile</h2>
-            <p className="text-muted-foreground">User profile coming soon!</p>
-          </div>
-        </div>;
+        return <UserProfile />;
       default:
         return <Dashboard />;
     }

@@ -1,125 +1,122 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Gen Z Finance App Design System - Vibrant, Gamified, Mobile-First */
+/* Professional Fintech Design System - Calm, Trustworthy, Mobile-First */
 
 @layer base {
   :root {
-    /* Core Brand Colors - Vibrant Gen Z Palette */
-    --background: 240 100% 99%;
-    --foreground: 240 30% 8%;
+    /* Core Brand Colors - Professional Fintech Palette */
+    --background: 210 15% 98%;
+    --foreground: 210 25% 12%;
 
-    /* Card System */
+    /* Card System - Soft shadows and subtle backgrounds */
     --card: 0 0% 100%;
-    --card-foreground: 240 30% 8%;
+    --card-foreground: 210 25% 12%;
 
     /* Interactive Elements */
     --popover: 0 0% 100%;
-    --popover-foreground: 240 30% 8%;
+    --popover-foreground: 210 25% 12%;
 
-    /* Primary Brand - Electric Purple */
-    --primary: 262 84% 58%;
+    /* Primary Brand - Professional Blue */
+    --primary: 210 100% 56%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 262 84% 68%;
+    --primary-muted: 210 100% 85%;
 
-    /* Secondary - Bright Cyan */
-    --secondary: 184 88% 55%;
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary - Muted Blue */
+    --secondary: 210 50% 75%;
+    --secondary-foreground: 210 25% 12%;
 
-    /* Success - Vibrant Green */
-    --success: 142 72% 50%;
+    /* Success - Performance Green */
+    --success: 142 50% 45%;
     --success-foreground: 0 0% 100%;
 
-    /* Warning - Electric Orange */
-    --warning: 32 95% 58%;
+    /* Warning - Soft Orange */
+    --warning: 35 80% 65%;
     --warning-foreground: 0 0% 100%;
 
-    /* Muted - Subtle Grays */
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 5% 45%;
+    /* Muted - Light Grays */
+    --muted: 210 15% 96%;
+    --muted-foreground: 210 15% 45%;
 
-    /* Accent - Hot Pink */
-    --accent: 328 86% 65%;
+    /* Accent - Gentle Teal */
+    --accent: 180 30% 60%;
     --accent-foreground: 0 0% 100%;
 
-    /* Destructive - Electric Red */
-    --destructive: 350 85% 60%;
+    /* Destructive - Reserved Red */
+    --destructive: 350 65% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders & Inputs */
-    --border: 240 10% 90%;
-    --input: 240 10% 96%;
-    --ring: 262 84% 58%;
+    /* Borders & Inputs - Softer borders */
+    --border: 210 15% 88%;
+    --input: 210 15% 95%;
+    --ring: 210 100% 56%;
 
-    /* Gamification Colors */
-    --gold: 45 95% 58%;
+    /* Subtle Effects - Reduced saturation */
+    --gold: 45 70% 65%;
     --silver: 0 0% 75%;
-    --bronze: 25 75% 55%;
+    --bronze: 25 55% 60%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(262 84% 58%), hsl(184 88% 55%));
-    --gradient-success: linear-gradient(135deg, hsl(142 72% 50%), hsl(142 72% 60%));
-    --gradient-glow: linear-gradient(135deg, hsl(262 84% 58% / 0.1), hsl(184 88% 55% / 0.1));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(240 100% 99%));
+    /* Soft Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 56%), hsl(210 50% 75%));
+    --gradient-success: linear-gradient(135deg, hsl(142 50% 45%), hsl(142 50% 55%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 15% 98%));
 
-    /* Shadows & Effects */
-    --shadow-primary: 0 8px 32px hsl(262 84% 58% / 0.25);
-    --shadow-success: 0 8px 32px hsl(142 72% 50% / 0.25);
-    --shadow-glow: 0 0 40px hsl(262 84% 58% / 0.3);
-    --shadow-card: 0 4px 24px hsl(240 10% 20% / 0.08);
+    /* Gentle Shadows & Effects */
+    --shadow-primary: 0 4px 20px hsl(210 100% 56% / 0.15);
+    --shadow-success: 0 4px 20px hsl(142 50% 45% / 0.15);
+    --shadow-card: 0 2px 16px hsl(210 15% 20% / 0.06);
 
-    /* Animation Variables */
+    /* Smooth Animation Variables */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-bounce: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-    --radius: 1rem;
+    --radius: 0.75rem;
   }
 
   .dark {
-    /* Dark Mode - Maintain Vibrancy */
-    --background: 240 15% 8%;
-    --foreground: 240 20% 95%;
+    /* Dark Mode - Professional and calm */
+    --background: 210 20% 8%;
+    --foreground: 210 15% 95%;
 
-    --card: 240 15% 10%;
-    --card-foreground: 240 20% 95%;
+    --card: 210 20% 10%;
+    --card-foreground: 210 15% 95%;
 
-    --popover: 240 15% 10%;
-    --popover-foreground: 240 20% 95%;
+    --popover: 210 20% 10%;
+    --popover-foreground: 210 15% 95%;
 
-    --primary: 262 84% 65%;
-    --primary-foreground: 240 15% 8%;
-    --primary-glow: 262 84% 75%;
+    --primary: 210 100% 60%;
+    --primary-foreground: 210 20% 8%;
+    --primary-muted: 210 100% 80%;
 
-    --secondary: 184 88% 60%;
-    --secondary-foreground: 240 15% 8%;
+    --secondary: 210 50% 70%;
+    --secondary-foreground: 210 20% 8%;
 
-    --success: 142 72% 55%;
-    --success-foreground: 240 15% 8%;
+    --success: 142 50% 50%;
+    --success-foreground: 210 20% 8%;
 
-    --warning: 32 95% 65%;
-    --warning-foreground: 240 15% 8%;
+    --warning: 35 80% 70%;
+    --warning-foreground: 210 20% 8%;
 
-    --muted: 240 15% 15%;
-    --muted-foreground: 240 10% 60%;
+    --muted: 210 20% 15%;
+    --muted-foreground: 210 15% 60%;
 
-    --accent: 328 86% 70%;
-    --accent-foreground: 240 15% 8%;
+    --accent: 180 30% 65%;
+    --accent-foreground: 210 20% 8%;
 
-    --destructive: 350 85% 65%;
-    --destructive-foreground: 240 15% 8%;
+    --destructive: 350 65% 60%;
+    --destructive-foreground: 210 20% 8%;
 
-    --border: 240 15% 18%;
-    --input: 240 15% 15%;
-    --ring: 262 84% 65%;
+    --border: 210 20% 18%;
+    --input: 210 20% 15%;
+    --ring: 210 100% 60%;
 
     /* Enhanced shadows for dark mode */
-    --shadow-primary: 0 8px 32px hsl(262 84% 65% / 0.4);
-    --shadow-success: 0 8px 32px hsl(142 72% 55% / 0.4);
-    --shadow-glow: 0 0 60px hsl(262 84% 65% / 0.5);
-    --shadow-card: 0 4px 24px hsl(240 15% 5% / 0.5);
+    --shadow-primary: 0 4px 20px hsl(210 100% 60% / 0.25);
+    --shadow-success: 0 4px 20px hsl(142 50% 50% / 0.25);
+    --shadow-card: 0 2px 16px hsl(210 20% 5% / 0.3);
   }
 }
 
@@ -132,86 +129,95 @@
     @apply bg-background text-foreground font-inter antialiased;
     font-feature-settings: "cv11", "ss01";
     font-variation-settings: "opsz" 32;
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-outfit font-bold;
+    @apply font-inter font-semibold;
+    line-height: 1.3;
   }
 }
 
 @layer components {
-  /* Gamified Progress Bars */
-  .progress-glow {
-    @apply relative overflow-hidden bg-muted rounded-full;
+  /* Professional Progress Bars */
+  .progress-gentle {
+    @apply relative overflow-hidden bg-muted rounded-lg;
   }
   
   .progress-glow::after {
     content: '';
     @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
     animation: shimmer 2s infinite;
+  }
+  
+  .progress-gentle::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent;
     transform: translateX(-100%);
   }
 
-  /* Achievement Badges */
+  /* Professional Achievement Badges */
   .achievement-badge {
     @apply relative inline-flex items-center justify-center;
     background: var(--gradient-primary);
     box-shadow: var(--shadow-primary);
-    transition: var(--transition-bounce);
-  }
-
-  .achievement-badge:hover {
-    transform: scale(1.1) rotate(2deg);
-    box-shadow: var(--shadow-glow);
-  }
-
-  /* Card Glow Effects */
-  .card-glow {
-    background: var(--gradient-card);
-    box-shadow: var(--shadow-card);
     transition: var(--transition-smooth);
   }
 
-  .card-glow:hover {
-    transform: translateY(-4px);
+  .achievement-badge:hover {
+    transform: translateY(-2px);
     box-shadow: var(--shadow-primary);
   }
 
-  /* Interactive Buttons */
-  .btn-game {
-    background: var(--gradient-primary);
+  /* Soft Card Effects */
+  .card-gentle {
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-smooth);
+    border: 1px solid hsl(var(--border));
+  }
+
+  .card-gentle:hover {
+    transform: translateY(-1px);
     box-shadow: var(--shadow-primary);
-    transition: var(--transition-bounce);
   }
 
-  .btn-game:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: var(--shadow-glow);
+  /* Professional Buttons */
+  .btn-professional {
+    background: hsl(var(--primary));
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-smooth);
+    border-radius: var(--radius);
   }
 
-  .btn-game:active {
-    transform: translateY(0) scale(1.02);
+  .btn-professional:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-primary);
   }
 
-  /* Spending Feedback Indicators */
+  .btn-professional:active {
+    transform: translateY(0);
+  }
+
+  /* Spending Feedback Indicators - Softer colors */
   .spending-good {
     @apply bg-success/10 text-success border-success/20;
-    box-shadow: 0 0 20px hsl(var(--success) / 0.2);
+    box-shadow: 0 0 12px hsl(var(--success) / 0.1);
   }
 
   .spending-warning {
     @apply bg-warning/10 text-warning border-warning/20;
-    box-shadow: 0 0 20px hsl(var(--warning) / 0.2);
+    box-shadow: 0 0 12px hsl(var(--warning) / 0.1);
   }
 
   .spending-danger {
     @apply bg-destructive/10 text-destructive border-destructive/20;
-    box-shadow: 0 0 20px hsl(var(--destructive) / 0.2);
+    box-shadow: 0 0 12px hsl(var(--destructive) / 0.1);
   }
 
-  /* Mobile-First Responsive Grid */
+  /* Mobile-First Responsive Grid with better spacing */
   .mobile-grid {
-    @apply grid grid-cols-1 gap-4;
+    @apply grid grid-cols-1 gap-6;
   }
 
   @media (min-width: 640px) {
@@ -224,6 +230,12 @@
     .mobile-grid {
       @apply grid-cols-3;
     }
+  }
+
+  /* Enhanced mobile touch targets */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
   }
 }
 

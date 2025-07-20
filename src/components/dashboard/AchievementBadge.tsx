@@ -1,4 +1,23 @@
 /**
+ * AchievementBadge.tsx
+ *
+ * Gamified achievement badge component for Fintrack GenZ Vision dashboard.
+ * - Displays achievement icon, title, description, and progress bar.
+ * - Supports multiple achievement types and rarities.
+ * - Handles unlocked/locked state and progress calculation.
+ *
+ * Dependencies:
+ * - Lucide React icons for visual representation
+ * - UI primitives: Badge, Progress
+ *
+ * Edge Cases & Limitations:
+ * - Icon fallback to Trophy if type is unknown
+ * - Progress bar capped at 100%
+ *
+ * TODO: Add unlock animations and accessibility improvements.
+ */
+
+/**
  * Achievement Badge Component - Gamified achievement system
  * 
  * Features:
@@ -37,12 +56,18 @@ interface AchievementBadgeProps {
   achievement: Achievement;
 }
 
+/**
+ * AchievementBadge
+ * Renders a single achievement badge with icon and progress.
+ * @param {AchievementBadgeProps} props - Achievement data
+ * @returns {JSX.Element} Achievement badge UI
+ */
 export function AchievementBadge({ achievement }: AchievementBadgeProps) {
   const { title, description, icon, unlocked, progress, maxProgress } = achievement;
   const progressPercentage = (progress / maxProgress) * 100;
   
   // Map icon strings to components
-  const iconMap: Record<string, React.ComponentType<any>> = {
+  const iconMap: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
     trophy: Trophy,
     star: Star,
     flame: Flame,
@@ -65,32 +90,28 @@ export function AchievementBadge({ achievement }: AchievementBadgeProps) {
       
       if (isLegendary) {
         return {
-          containerClass: 'bg-gradient-to-r from-gold/20 to-gold/10 border-gold/30',
-          iconClass: 'text-gold',
-          badgeClass: 'bg-gold text-black',
-          glowClass: 'shadow-[0_0_20px_hsl(var(--gold)/0.5)]'
+          containerClass: 'bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200',
+          iconClass: 'text-amber-600',
+          badgeClass: 'bg-amber-100 text-amber-800 border-amber-200',
         };
       } else if (isRare) {
         return {
-          containerClass: 'bg-gradient-to-r from-secondary/20 to-secondary/10 border-secondary/30',
-          iconClass: 'text-secondary',
-          badgeClass: 'bg-secondary text-white',
-          glowClass: 'shadow-[0_0_20px_hsl(var(--secondary)/0.3)]'
+          containerClass: 'bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200',
+          iconClass: 'text-purple-600',
+          badgeClass: 'bg-purple-100 text-purple-800 border-purple-200',
         };
       } else {
         return {
-          containerClass: 'bg-gradient-to-r from-success/20 to-success/10 border-success/30',
-          iconClass: 'text-success',
-          badgeClass: 'bg-success text-white',
-          glowClass: 'shadow-[0_0_20px_hsl(var(--success)/0.3)]'
+          containerClass: 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200',
+          iconClass: 'text-green-600',
+          badgeClass: 'bg-green-100 text-green-800 border-green-200',
         };
       }
     } else {
       return {
-        containerClass: 'bg-muted/30 border-muted',
+        containerClass: 'bg-muted/30 border-border',
         iconClass: 'text-muted-foreground',
-        badgeClass: 'bg-muted text-muted-foreground',
-        glowClass: ''
+        badgeClass: 'bg-muted text-muted-foreground border-border',
       };
     }
   };
@@ -98,57 +119,53 @@ export function AchievementBadge({ achievement }: AchievementBadgeProps) {
   const styling = getAchievementStyling();
 
   return (
-    <div className={`relative p-4 rounded-xl border-2 transition-all duration-300 ${
+    <div className={`relative p-4 rounded-lg border transition-all duration-200 ${
       styling.containerClass
-    } ${unlocked ? `${styling.glowClass} hover:scale-[1.02]` : ''}`}>
-      {/* Unlock Animation Overlay */}
-      {unlocked && (
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer rounded-xl" />
-      )}
+    } ${unlocked ? 'hover:shadow-md' : ''}`}>
       
       <div className="relative flex items-center gap-3">
         {/* Achievement Icon */}
-        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
           unlocked 
-            ? 'bg-white/20 backdrop-blur-sm' 
+            ? 'bg-white/60 backdrop-blur-sm shadow-sm' 
             : 'bg-muted/50'
-        } ${unlocked ? 'animate-bounce-soft' : ''}`}>
-          <IconComponent className={`w-6 h-6 ${styling.iconClass}`} />
+        }`}>
+          <IconComponent className={`w-5 h-5 ${styling.iconClass}`} />
         </div>
 
         {/* Achievement Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h4 className={`font-semibold text-sm ${
+            <h4 className={`font-medium text-sm ${
               unlocked ? 'text-foreground' : 'text-muted-foreground'
             }`}>
               {title}
             </h4>
             {unlocked && (
-              <Badge className={`text-xs px-2 py-0 ${styling.badgeClass}`}>
+              <Badge variant="secondary" className={`text-xs px-2 py-0 ${styling.badgeClass}`}>
                 ✓ Unlocked
               </Badge>
             )}
           </div>
           
-          <p className={`text-xs ${
-            unlocked ? 'text-foreground/70' : 'text-muted-foreground'
+          <p className={`text-xs leading-relaxed ${
+            unlocked ? 'text-muted-foreground' : 'text-muted-foreground'
           }`}>
             {description}
           </p>
 
           {/* Progress Bar for Incomplete Achievements */}
           {!unlocked && (
-            <div className="mt-2 space-y-1">
+            <div className="mt-3 space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">Progress</span>
-                <span className="font-medium">
+                <span className="font-medium text-foreground">
                   {progress}/{maxProgress}
                 </span>
               </div>
               <Progress 
                 value={progressPercentage} 
-                className="h-2 bg-muted/30"
+                className="h-1.5 bg-muted/50"
               />
             </div>
           )}
@@ -156,19 +173,14 @@ export function AchievementBadge({ achievement }: AchievementBadgeProps) {
           {/* Achievement Completed Indicator */}
           {unlocked && progress > maxProgress && (
             <div className="mt-2 flex items-center gap-1">
-              <Star className="w-3 h-3 text-gold" />
-              <span className="text-xs text-gold font-medium">
+              <Star className="w-3 h-3 text-amber-500" />
+              <span className="text-xs text-amber-600 font-medium">
                 Exceeded goal! ({progress}/{maxProgress})
               </span>
             </div>
           )}
         </div>
       </div>
-
-      {/* Rare Achievement Glow Effect */}
-      {unlocked && styling.glowClass && (
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-current to-transparent opacity-5 animate-pulse" />
-      )}
     </div>
   );
 }

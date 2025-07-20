@@ -1,4 +1,22 @@
 /**
+ * GoalsPage.tsx
+ *
+ * Gamified savings goals management page for Fintrack GenZ Vision.
+ * - Displays multiple goals with progress, templates, achievements, and social sharing.
+ * - Integrates with backend for goal creation and updates (future).
+ *
+ * Dependencies:
+ * - Lucide React icons for goal categories
+ * - UI primitives: Card, Button, Progress, Badge
+ *
+ * Edge Cases & Limitations:
+ * - All data is currently mock/static; replace with API integration.
+ * - Deadline logic assumes valid Date objects.
+ *
+ * TODO: Add goal creation, backend integration, and accessibility improvements.
+ */
+
+/**
  * Goals Page Component - Gamified savings goals management
  * 
  * Features:
@@ -38,6 +56,11 @@ interface Goal {
   color: string;
 }
 
+/**
+ * GoalsPage
+ * Renders the goals management UI with progress and achievement tracking.
+ * @returns {JSX.Element} Goals page UI
+ */
 export function GoalsPage() {
   const [goals] = useState<Goal[]>([
     {
@@ -99,12 +122,12 @@ export function GoalsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-outfit font-bold text-foreground">
-            Your Goals 🎯
+          <h1 className="text-2xl font-semibold text-foreground">
+            Your Goals
           </h1>
           <p className="text-muted-foreground">Turn dreams into reality</p>
         </div>
-        <Button variant="game">
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
           <Plus className="w-4 h-4 mr-2" />
           New Goal
         </Button>
@@ -112,18 +135,18 @@ export function GoalsPage() {
 
       {/* Goals Overview */}
       <div className="grid grid-cols-2 gap-4">
-        <Card className="card-glow border-0">
+        <Card className="border shadow-sm bg-card">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-outfit font-bold text-primary">
+            <div className="text-2xl font-semibold text-primary">
               {goals.length}
             </div>
             <div className="text-sm text-muted-foreground">Active Goals</div>
           </CardContent>
         </Card>
-        <Card className="card-glow border-0">
+        <Card className="border shadow-sm bg-card">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-outfit font-bold text-success">
-              ${goals.reduce((sum, goal) => sum + goal.current, 0).toLocaleString()}
+            <div className="text-2xl font-semibold text-success">
+              ${goals.reduce((sum, goal) => sum + goal.current, 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </div>
             <div className="text-sm text-muted-foreground">Total Saved</div>
           </CardContent>
@@ -132,24 +155,24 @@ export function GoalsPage() {
 
       {/* Active Goals */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-foreground">Active Goals</h2>
+        <h2 className="text-lg font-medium text-foreground">Active Goals</h2>
         {goals.map((goal) => {
           const percentage = getProgressPercentage(goal.current, goal.target);
           const daysRemaining = getDaysRemaining(goal.deadline);
           const isOverdue = daysRemaining < 0;
           
           return (
-            <Card key={goal.id} className="card-glow border-0">
+            <Card key={goal.id} className="border shadow-sm bg-card">
               <CardContent className="p-5 space-y-4">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-full bg-${goal.color}/10 flex items-center justify-center`}>
-                      {goal.icon === 'plane' && <Plane className={`w-6 h-6 text-${goal.color}`} />}
-                      {goal.icon === 'car' && <Car className={`w-6 h-6 text-${goal.color}`} />}
-                      {goal.icon === 'shield' && <Target className={`w-6 h-6 text-${goal.color}`} />}
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      {goal.icon === 'plane' && <Plane className="w-5 h-5 text-primary" />}
+                      {goal.icon === 'car' && <Car className="w-5 h-5 text-primary" />}
+                      {goal.icon === 'shield' && <Target className="w-5 h-5 text-primary" />}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">{goal.title}</h3>
+                      <h3 className="font-medium text-foreground">{goal.title}</h3>
                       <p className="text-sm text-muted-foreground">{goal.description}</p>
                     </div>
                   </div>
@@ -159,23 +182,23 @@ export function GoalsPage() {
                   </Badge>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Progress</span>
                     <span className="font-medium">
-                      ${goal.current.toLocaleString()} / ${goal.target.toLocaleString()}
+                      ${goal.current.toLocaleString('en-US', { minimumFractionDigits: 2 })} / ${goal.target.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </span>
                   </div>
                   <Progress 
                     value={percentage} 
-                    className={`progress-glow h-3 bg-${goal.color}/10`}
+                    className="h-2 bg-primary/10"
                   />
                   <div className="flex items-center justify-between text-xs">
-                    <span className={`font-semibold text-${goal.color}`}>
+                    <span className="font-medium text-primary">
                       {percentage.toFixed(1)}% complete
                     </span>
                     <span className="text-muted-foreground">
-                      ${(goal.target - goal.current).toLocaleString()} remaining
+                      ${(goal.target - goal.current).toLocaleString('en-US', { minimumFractionDigits: 2 })} remaining
                     </span>
                   </div>
                 </div>
@@ -184,19 +207,19 @@ export function GoalsPage() {
                 {percentage >= 25 && (
                   <div className="flex flex-wrap gap-2">
                     {percentage >= 25 && (
-                      <Badge className="achievement-badge text-xs px-2 py-1">
+                      <Badge variant="secondary" className="text-xs px-2 py-1 bg-success/10 text-success border-success/20">
                         <Trophy className="w-3 h-3 mr-1" />
                         Quarter Way
                       </Badge>
                     )}
                     {percentage >= 50 && (
-                      <Badge className="achievement-badge text-xs px-2 py-1">
+                      <Badge variant="secondary" className="text-xs px-2 py-1 bg-success/10 text-success border-success/20">
                         <Trophy className="w-3 h-3 mr-1" />
                         Halfway Hero
                       </Badge>
                     )}
                     {percentage >= 75 && (
-                      <Badge className="achievement-badge text-xs px-2 py-1">
+                      <Badge variant="secondary" className="text-xs px-2 py-1 bg-success/10 text-success border-success/20">
                         <Trophy className="w-3 h-3 mr-1" />
                         Almost There
                       </Badge>
@@ -205,10 +228,10 @@ export function GoalsPage() {
                 )}
 
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button variant="outline" size="sm" className="flex-1 h-9">
                     Edit Goal
                   </Button>
-                  <Button variant="game" size="sm" className="flex-1">
+                  <Button size="sm" className="flex-1 h-9 bg-primary hover:bg-primary/90 text-primary-foreground">
                     Add Money
                   </Button>
                 </div>
@@ -220,20 +243,20 @@ export function GoalsPage() {
 
       {/* Goal Templates */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-foreground">Popular Goals</h2>
+        <h2 className="text-lg font-medium text-foreground">Popular Goals</h2>
         <div className="grid grid-cols-2 gap-3">
           {goalTemplates.map((template, index) => {
             const Icon = template.icon;
             return (
-              <Card key={index} className="card-glow border-0 cursor-pointer hover:scale-105 transition-transform">
-                <CardContent className="p-4 text-center space-y-2">
-                  <div className={`w-10 h-10 mx-auto rounded-full bg-${template.color}/10 flex items-center justify-center`}>
-                    <Icon className={`w-5 h-5 text-${template.color}`} />
+              <Card key={index} className="border shadow-sm bg-card cursor-pointer hover:shadow-md transition-shadow">
+                <CardContent className="p-4 text-center space-y-3">
+                  <div className="w-10 h-10 mx-auto rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <h4 className="font-medium text-sm text-foreground">{template.title}</h4>
                     <p className="text-xs text-muted-foreground">
-                      ${template.target.toLocaleString()}
+                      ${template.target.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </p>
                   </div>
                 </CardContent>

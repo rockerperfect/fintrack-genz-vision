@@ -1,4 +1,23 @@
 /**
+ * Dashboard.tsx
+ *
+ * Main dashboard component for Fintrack GenZ Vision.
+ * - Displays user balance, budget, savings, streak, achievements, and recent transactions.
+ * - Integrates SavingsGoal, SpendingFeedback, and AchievementBadge components.
+ * - Mobile-first, gamified UI for Gen Z users.
+ *
+ * Dependencies:
+ * - Lucide React icons for visual representation
+ * - UI primitives: Card, Button, Progress, Badge
+ *
+ * Edge Cases & Limitations:
+ * - All data is currently mock/static; replace with API integration.
+ * - Transaction and achievement types should be extended for real use cases.
+ *
+ * TODO: Add backend integration, error handling, and accessibility improvements.
+ */
+
+/**
  * Main Dashboard Component - Mobile-First Finance App for Gen Z
  * 
  * Features:
@@ -30,139 +49,176 @@ import {
 import { SpendingFeedback } from './SpendingFeedback';
 import { SavingsGoal } from './SavingsGoal';
 import { AchievementBadge } from './AchievementBadge';
+import { TransactionHistory } from './TransactionHistory';
 
-interface DashboardData {
-  balance: number;
-  monthlyBudget: number;
-  spent: number;
-  savings: number;
-  savingsGoal: number;
-  streak: number;
-  level: number;
-  achievements: Achievement[];
-  recentTransactions: Transaction[];
+function getLocalTransactions() {
+  return JSON.parse(localStorage.getItem('transactions') || '[]');
 }
 
-interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  unlocked: boolean;
-  progress: number;
-  maxProgress: number;
-}
-
-interface Transaction {
-  id: string;
-  amount: number;
-  description: string;
-  category: string;
-  timestamp: Date;
-  type: 'income' | 'expense';
+function calculateDashboardData(transactions) {
+  let balance = 0;
+  let spent = 0;
+  let savings = 0;
+  const monthlyBudget = 3500;
+  const savingsGoal = 5000;
+  let streak = 0;
+  let level = 1;
+  let achievements = [];
+  const recentTransactions = transactions.slice(0, 5).map(txn => ({
+    ...txn,
+    timestamp: new Date(txn.timestamp)
+  }));
+  transactions.forEach(txn => {
+    if (txn.type === 'income') balance += Number(txn.amount);
+    else balance -= Number(txn.amount);
+    if (txn.type === 'expense') spent += Number(txn.amount);
+    if (txn.type === 'income') savings += Number(txn.amount);
+  });
+  // Streak: count consecutive days with transactions
+  let lastDate = null;
+  transactions.forEach(txn => {
+    const txnDate = new Date(txn.timestamp).toDateString();
+    if (lastDate === null || txnDate === lastDate) {
+      streak++;
+      lastDate = txnDate;
+    }
+  });
+  // Level: based on number of transactions
+  level = Math.max(1, Math.floor(transactions.length / 5));
+  // Achievements: simple demo
+  achievements = [
+    {
+      id: '1',
+      title: 'Savings Streak',
+      description: 'Save money for 7 days in a row',
+      icon: 'flame',
+      unlocked: streak >= 7,
+      progress: streak,
+      maxProgress: 7
+    },
+    {
+      id: '2',
+      title: 'Budget Master',
+      description: 'Stay under budget for 3 months',
+      icon: 'trophy',
+      unlocked: spent < monthlyBudget * 3,
+      progress: spent,
+      maxProgress: monthlyBudget * 3
+    },
+    {
+      id: '3',
+      title: 'Emergency Fund',
+      description: 'Build $1000 emergency fund',
+      icon: 'star',
+      unlocked: savings >= 1000,
+      progress: savings,
+      maxProgress: 1000
+    }
+  ];
+  return {
+    balance,
+    monthlyBudget,
+    spent,
+    savings,
+    savingsGoal,
+    streak,
+    level,
+    achievements,
+    recentTransactions
+  };
 }
 
 export function Dashboard() {
-  // Mock data - would come from API/state management
-  const [data, setData] = useState<DashboardData>({
-    balance: 2847.52,
-    monthlyBudget: 3500,
-    spent: 1652.48,
-    savings: 1250.00,
-    savingsGoal: 5000,
-    streak: 12,
-    level: 7,
-    achievements: [
-      {
-        id: '1',
-        title: 'Savings Streak',
-        description: 'Save money for 7 days in a row',
-        icon: 'flame',
-        unlocked: true,
-        progress: 12,
-        maxProgress: 7
-      },
-      {
-        id: '2',
-        title: 'Budget Master',
-        description: 'Stay under budget for 3 months',
-        icon: 'trophy',
-        unlocked: false,
-        progress: 2,
-        maxProgress: 3
-      },
-      {
-        id: '3',
-        title: 'Emergency Fund',
-        description: 'Build $1000 emergency fund',
-        icon: 'star',
-        unlocked: true,
-        progress: 1250,
-        maxProgress: 1000
-      }
-    ],
-    recentTransactions: [
-      {
-        id: '1',
-        amount: -15.49,
-        description: 'Coffee shop',
-        category: 'Food',
-        timestamp: new Date(),
-        type: 'expense'
-      },
-      {
-        id: '2',
-        amount: -45.00,
-        description: 'Gas station',
-        category: 'Transport',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-        type: 'expense'
-      }
-    ]
-  });
+  const [data, setData] = useState(calculateDashboardData(getLocalTransactions()));
+
+  useEffect(() => {
+    function updateDashboard() {
+      setData(calculateDashboardData(getLocalTransactions()));
+    }
+    window.addEventListener('transactionsUpdated', updateDashboard);
+    updateDashboard();
+    return () => window.removeEventListener('transactionsUpdated', updateDashboard);
+  }, []);
+
+  // Quick Actions
+  function handleSaveMoney() {
+    const txn = {
+      id: `txn_${Date.now()}`,
+      amount: 50,
+      description: 'Saved Money',
+      category: 'Savings',
+      timestamp: new Date().toISOString(),
+      type: 'income'
+    };
+    const txns = getLocalTransactions();
+    txns.unshift(txn);
+    localStorage.setItem('transactions', JSON.stringify(txns));
+    window.dispatchEvent(new Event('transactionsUpdated'));
+  }
+  function handleSetGoal() {
+    alert('Goal setting coming soon!');
+  }
+  function handleAddIncome() {
+    const txn = {
+      id: `txn_${Date.now()}`,
+      amount: 100,
+      description: 'Added Income',
+      category: 'Income',
+      timestamp: new Date().toISOString(),
+      type: 'income'
+    };
+    const txns = getLocalTransactions();
+    txns.unshift(txn);
+    localStorage.setItem('transactions', JSON.stringify(txns));
+    window.dispatchEvent(new Event('transactionsUpdated'));
+  }
 
   const spendingPercentage = (data.spent / data.monthlyBudget) * 100;
   const savingsPercentage = (data.savings / data.savingsGoal) * 100;
   const remainingBudget = data.monthlyBudget - data.spent;
 
   return (
-    <div className="min-h-screen bg-background p-4 space-y-6">
-      {/* Header with Level and Streak */}
+    <div className="min-h-screen bg-background p-4 space-y-8 pb-24">
+      {/* Header with Level and Streak - More professional */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-outfit font-bold text-foreground">
-            Hey there! 👋
+          <h1 className="text-2xl font-semibold text-foreground mb-1">
+            Good morning! 👋
           </h1>
-          <p className="text-muted-foreground">Ready to crush your goals?</p>
+          <p className="text-muted-foreground text-sm">Let's check your financial progress</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="achievement-badge px-3 py-1 rounded-full text-sm font-bold text-white">
+          <div className="bg-primary/10 text-primary px-3 py-2 rounded-lg text-sm font-medium border border-primary/20">
             Level {data.level}
           </div>
-          <div className="flex items-center gap-1 bg-warning/10 px-3 py-1 rounded-full">
-            <Flame className="w-4 h-4 text-warning" />
-            <span className="text-sm font-semibold text-warning">{data.streak}</span>
+          <div className="flex items-center gap-2 bg-success/10 text-success px-3 py-2 rounded-lg border border-success/20">
+            <Flame className="w-4 h-4" />
+            <span className="text-sm font-medium">{data.streak} day streak</span>
           </div>
         </div>
       </div>
 
-      {/* Balance Card */}
-      <Card className="card-glow border-0">
+      {/* Balance Card - Professional styling */}
+      <Card className="border shadow-sm bg-card">
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Wallet className="w-5 h-5 text-primary" />
-              <span className="text-sm text-muted-foreground">Total Balance</span>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Wallet className="w-5 h-5 text-primary" />
+              </div>
+              <span className="text-sm text-muted-foreground font-medium">Total Balance</span>
             </div>
-            <TrendingUp className="w-5 h-5 text-success" />
+            <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+              <TrendingUp className="w-4 h-4 text-success" />
+            </div>
           </div>
-          <div className="space-y-2">
-            <h2 className="text-3xl font-outfit font-bold text-foreground">
-              ${data.balance.toLocaleString()}
+          <div className="space-y-3">
+            <h2 className="text-3xl font-semibold text-foreground">
+              ${data.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </h2>
             <div className="flex items-center gap-2">
               <ArrowUp className="w-4 h-4 text-success" />
-              <span className="text-sm text-success">+12.5% this month</span>
+              <span className="text-sm text-success font-medium">+12.5% this month</span>
             </div>
           </div>
         </CardContent>
@@ -183,14 +239,16 @@ export function Dashboard() {
       />
 
       {/* Achievements */}
-      <Card className="card-glow border-0">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Trophy className="w-5 h-5 text-gold" />
+      <Card className="border shadow-sm bg-card">
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-3 text-lg font-semibold">
+            <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center">
+              <Trophy className="w-4 h-4 text-warning" />
+            </div>
             Achievements
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-4">
           {data.achievements.map((achievement) => (
             <AchievementBadge 
               key={achievement.id}
@@ -200,56 +258,36 @@ export function Dashboard() {
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
-      <div className="mobile-grid gap-3">
-        <Button variant="game" size="xl" className="h-16 rounded-2xl flex-col gap-1">
-          <PiggyBank className="w-6 h-6" />
-          <span className="text-sm font-semibold">Save Money</span>
-        </Button>
-        <Button variant="game" size="xl" className="h-16 rounded-2xl flex-col gap-1">
-          <Target className="w-6 h-6" />
-          <span className="text-sm font-semibold">Set Goal</span>
-        </Button>
-        <Button variant="game" size="xl" className="h-16 rounded-2xl flex-col gap-1">
-          <DollarSign className="w-6 h-6" />
-          <span className="text-sm font-semibold">Add Income</span>
-        </Button>
+      {/* Quick Actions - Professional buttons */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-foreground">Quick Actions</h3>
+        <div className="mobile-grid gap-4">
+          <button 
+            onClick={handleSaveMoney}
+            className="touch-target bg-primary text-primary-foreground p-4 rounded-lg flex flex-col items-center gap-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+          >
+            <PiggyBank className="w-6 h-6" />
+            <span className="text-sm font-medium">Save Money</span>
+          </button>
+          <button 
+            onClick={handleSetGoal}
+            className="touch-target bg-secondary text-secondary-foreground p-4 rounded-lg flex flex-col items-center gap-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+          >
+            <Target className="w-6 h-6" />
+            <span className="text-sm font-medium">Set Goal</span>
+          </button>
+          <button 
+            onClick={handleAddIncome}
+            className="touch-target bg-success text-success-foreground p-4 rounded-lg flex flex-col items-center gap-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+          >
+            <DollarSign className="w-6 h-6" />
+            <span className="text-sm font-medium">Add Income</span>
+          </button>
+        </div>
       </div>
 
-      {/* Recent Activity */}
-      <Card className="card-glow border-0">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Recent Activity</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {data.recentTransactions.map((transaction) => (
-            <div 
-              key={transaction.id}
-              className="flex items-center justify-between p-3 bg-muted/50 rounded-xl"
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  transaction.type === 'expense' ? 'bg-destructive/10' : 'bg-success/10'
-                }`}>
-                  {transaction.type === 'expense' ? 
-                    <ArrowDown className="w-5 h-5 text-destructive" /> : 
-                    <ArrowUp className="w-5 h-5 text-success" />
-                  }
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">{transaction.description}</p>
-                  <p className="text-sm text-muted-foreground">{transaction.category}</p>
-                </div>
-              </div>
-              <div className={`font-semibold ${
-                transaction.type === 'expense' ? 'text-destructive' : 'text-success'
-              }`}>
-                {transaction.type === 'expense' ? '-' : '+'}${Math.abs(transaction.amount).toFixed(2)}
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      {/* Transaction History (full list, replaces static recent activity) */}
+      <TransactionHistory />
     </div>
   );
 }
